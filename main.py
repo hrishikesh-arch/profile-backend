@@ -91,6 +91,52 @@ async def analyze_cv(request: AnalyzerRequest):
     # 4. Return the structured AI response strictly matching the Pydantic model
     return analysis_result
 
+from schemas_jobs import JobMatchRequest, JobMatchesResponse
+@app.post("/api/jobs/matches", response_model=JobMatchesResponse)
+async def find_job_matches(request: JobMatchRequest):
+    """
+    Simulates calling Apify's LinkedIn Jobs Scraper based on the student's domain,
+    then uses Gemini to score the student's skills against the live job requirements.
+    """
+    logger.info(f"Scraping LinkedIn for live jobs matching: {request.domain_interest}")
+    
+    await asyncio.sleep(2.5) # Simulate Apify LinkedIn Scraping & Gemini LLM scoring
+    
+    # Return mocked highly-structured match data
+    return {
+        "student_domain": request.domain_interest,
+        "total_jobs_analyzed": 45,
+        "matches": [
+            {
+                "job_title": f"Junior {request.domain_interest}",
+                "company_name": "TechNova Solutions",
+                "location": request.preferred_locations[0] if request.preferred_locations else "Remote",
+                "linkedin_job_url": "https://www.linkedin.com/jobs/view/123456",
+                "match_score": 92,
+                "match_reason": f"Your strong background in {request.skills[0] if request.skills else 'core tech'} perfectly aligns with their immediate requirements.",
+                "missing_skills": ["Docker"]
+            },
+            {
+                "job_title": f"Associate {request.domain_interest}",
+                "company_name": "Global Systems Inc",
+                "location": "Hybrid - Bangalore",
+                "linkedin_job_url": "https://www.linkedin.com/jobs/view/789012",
+                "match_score": 85,
+                "match_reason": "Good foundational skills, but they prefer candidates with cloud deployment experience.",
+                "missing_skills": ["AWS", "CI/CD"]
+            },
+            {
+                "job_title": f"{request.domain_interest} Intern",
+                "company_name": "StartupX",
+                "location": "Remote",
+                "linkedin_job_url": "https://www.linkedin.com/jobs/view/345678",
+                "match_score": 78,
+                "match_reason": "You meet all technical criteria, but match score is slightly lower as this is an internship and you may be overqualified.",
+                "missing_skills": []
+            }
+        ]
+    }
+
 @app.get("/health")
 async def health_check():
     """Endpoint for load balancers to check API health"""
