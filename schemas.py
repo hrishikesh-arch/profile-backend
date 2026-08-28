@@ -79,3 +79,21 @@ class UserProfile(BaseModel):
     scheduling: Scheduling
     linkedin_url: Optional[HttpUrl] = None
     resume_url: Optional[HttpUrl] = None
+
+class AnalyzerRequest(BaseModel):
+    job_description: str = Field(..., description="The target JD text")
+    linkedin_url: HttpUrl
+    github_url: HttpUrl
+    codolio_url: Optional[HttpUrl] = None
+
+class ImprovementPoint(BaseModel):
+    category: str
+    suggestion: str
+    original_text: Optional[str] = None
+    improved_text: Optional[str] = None
+
+class AnalyzerResponse(BaseModel):
+    match_score: int = Field(..., ge=0, le=100)
+    missing_keywords: List[str]
+    scraped_insights: List[str]
+    improvement_points: List[ImprovementPoint]
