@@ -1,12 +1,17 @@
-from pydantic import BaseModel, HttpUrl, Field
 from typing import List, Optional
 
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+
 class JobMatchRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     domain_interest: str = Field(..., description="E.g., Frontend Developer, Data Scientist")
     skills: List[str] = Field(..., description="List of student skills")
-    preferred_locations: List[str] = []
+    preferred_locations: List[str] = Field(default_factory=list)
 
 class JobMatchResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     job_title: str
     company_name: str
     location: str
@@ -16,6 +21,8 @@ class JobMatchResult(BaseModel):
     missing_skills: List[str]
 
 class JobMatchesResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     student_domain: str
     total_jobs_analyzed: int
     matches: List[JobMatchResult]
